@@ -9,18 +9,17 @@ static constexpr auto ARGS_REQUIRED = 7;
 int main(int argc, char* argv[]) {
     if (argc != ARGS_REQUIRED) {
         std::cout <<
-            "Checkperm checks the write permission in the given directory.\n" <<
-            "Usage:\n" <<
-            "checkperm -u <username> -g <group> -p <path>\n" <<
-            "-u <username>  -  First, checks if user can write.\n" <<
-            "-g <group>     -  Second, checks if group can write.\n" <<
+            "Checkperm recursively checks the write permission in the given directory.\n"
+            "Usage:\n"
+            "checkperm -u <username> -g <group> -p <path>\n"
+            "-u <username>  -  First, checks if user can write.\n"
+            "-g <group>     -  Second, checks if group can write.\n"
             "-p <path>      -  Path to check permissions in." <<
             std::endl;
         return 0; 
     }
 
     CommandLineParser arguments(argc, argv);
-
     auto& username              = arguments.getOptionValue("-u");
     auto& group                 = arguments.getOptionValue("-g");
     std::filesystem::path path  = arguments.getOptionValue("-p");
@@ -37,8 +36,6 @@ int main(int argc, char* argv[]) {
         std::cerr << "Invalid path: " << path.string() << std::endl;
         return 2;
     }
-
-    std::cout << username << std::endl << group << std::endl << path << std::endl;
 
     return 0;
 }
