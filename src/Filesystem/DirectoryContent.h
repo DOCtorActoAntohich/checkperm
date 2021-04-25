@@ -5,9 +5,8 @@
 #include <filesystem>
 
 class DirectoryContent {
-public:
     using path_t = std::filesystem::path;
-
+public:
     static std::vector<path_t> getAll(const path_t& source);
     static std::vector<path_t> getAllRecursively(const path_t& source);
 private:

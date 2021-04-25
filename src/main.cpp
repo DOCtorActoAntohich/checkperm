@@ -3,7 +3,7 @@
 #include <filesystem>
 
 #include "CommandLineParser.h"
-#include "DirectoryContent.h"
+#include "Filesystem/DirectoryContent.h"
 
 static constexpr auto ARGS_REQUIRED = 7;
 
@@ -36,6 +36,12 @@ int main(int argc, char* argv[]) {
     if (!std::filesystem::exists(path)) {
         std::cerr << "Invalid path: " << path.string() << std::endl;
         return 2;
+    }
+
+    std::vector<std::filesystem::path> contents = DirectoryContent::getAllRecursively(path);
+    for (auto& entry : contents) {
+        auto prefix = std::filesystem::is_directory(entry) ? "d" : "f";
+        std::cout << prefix << " " << entry.string() << std::endl;
     }
 
     return 0;
