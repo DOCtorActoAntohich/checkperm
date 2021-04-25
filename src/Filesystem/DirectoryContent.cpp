@@ -1,7 +1,6 @@
 #include "DirectoryContent.h"
 
 #include <queue>
-#include <iostream>
 
 DirectoryContent::DirectoryContent()
 { }

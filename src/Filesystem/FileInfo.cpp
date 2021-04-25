@@ -2,14 +2,23 @@
 
 #include <tuple>
 #include <exception>
-#include <iostream>
+
+#pragma region C Wrapper Declarations
 
 #include <pwd.h>
 #include <grp.h>
 #include <sys/stat.h>
 
+/**
+ * @brief Gets the owner and group name for a given file.
+ * 
+ * @param file A path to a file.
+ * @return A tuple with owner name and group name in this order.
+ */
 std::tuple<std::string, std::string>
 getOwnerAndGroup(const std::filesystem::path& file);
+
+#pragma endregion
 
 
 

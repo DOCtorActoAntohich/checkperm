@@ -12,15 +12,17 @@ CommandLineParser::CommandLineParser(int argc, char* argv[])
 }
 
 
+
 bool CommandLineParser::hasOption(const std::string& key) const {
     auto it = std::find(m_tokens.begin(), m_tokens.end(), key);
     return it != m_tokens.end();
 }
 
 
+
 const std::string& CommandLineParser::getOptionValue(const std::string& key) const {
     auto it = std::find(m_tokens.begin(), m_tokens.end(), key);
-    if (it != m_tokens.end() && ++it != m_tokens.end() && (*it)[0] != '-') {
+    if (it != m_tokens.end() && ++it != m_tokens.end()) {
         return *it;
     }
 
