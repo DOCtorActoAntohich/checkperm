@@ -9,17 +9,15 @@
 #include <sys/stat.h>
 
 std::tuple<std::string, std::string>
-getFileData(const std::filesystem::path& file);
+getOwnerAndGroup(const std::filesystem::path& file);
 
 
 
 FileInfo::FileInfo(const std::filesystem::path& path)
     : m_path(path)
+    , m_perms(std::filesystem::status(path).permissions())
 {
-    m_perms = std::filesystem::status(path).permissions();
-
-
-    std::tie(m_owner, m_group) = getFileData(path);
+    std::tie(m_owner, m_group) = getOwnerAndGroup(path);
 }
 
 
@@ -54,7 +52,7 @@ bool FileInfo::hasPermission(std::filesystem::perms permission) const {
 #pragma region C Wrapper
 
 std::tuple<std::string, std::string>
-getFileData(const std::filesystem::path& file) {
+getOwnerAndGroup(const std::filesystem::path& file) {
     struct stat info;
     if (stat(file.c_str(), &info) != 0) {
         throw std::runtime_error("Cannot access file: " + file.string());
