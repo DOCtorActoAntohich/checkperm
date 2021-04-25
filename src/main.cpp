@@ -43,10 +43,13 @@ int main(int argc, char* argv[]) {
     std::vector<std::filesystem::path> contents = DirectoryContent::getAllRecursively(path);
     for (auto& path : contents) {
         FileInfo file(path);
-        bool ownerCanWrite = file.checkOwnerPermissions(username, Permission::WRITE);
-        bool groupCanWrite = file.checkGroupPermissions(group, Permission::WRITE);
-        bool otherCanWrite = file.checkOtherPermissions(Permission::WRITE);
-        if (ownerCanWrite || groupCanWrite || otherCanWrite) {
+
+        using perm = std::filesystem::perms;
+        bool  ownerCanWrite = file.isOwner(username) && file.hasPermission(perm::owner_write);
+        bool  groupCanWrite = file.isGroup(group)    && file.hasPermission(perm::group_write);
+        bool othersCanWrite = file.hasPermission(perm::others_write);
+
+        if (ownerCanWrite || groupCanWrite || othersCanWrite) {
             auto prefix = std::filesystem::is_directory(path) ? "d" : "f";
             std::cout << prefix << " " << path.string() << std::endl;
         }
