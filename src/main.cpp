@@ -4,6 +4,7 @@
 
 #include "CommandLineParser.h"
 #include "Filesystem/DirectoryContent.h"
+#include "Filesystem/FileInfo.h"
 
 static constexpr auto ARGS_REQUIRED = 7;
 
@@ -26,11 +27,11 @@ int main(int argc, char* argv[]) {
     std::filesystem::path path  = arguments.getOptionValue("-p");
 
     if (username == "") {
-        std::cerr << "Invalid user name: " << username << std::endl;
+        std::cerr << "Invalid user name, or the name is unspecified." << username << std::endl;
         return 2;
     }
     if (group == "") {
-        std::cerr << "Invalid group name: " << group << std::endl;
+        std::cerr << "Invalid group name, or the name is unspecified." << group << std::endl;
         return 2;
     }
     if (!std::filesystem::exists(path)) {
@@ -38,10 +39,17 @@ int main(int argc, char* argv[]) {
         return 2;
     }
 
+
     std::vector<std::filesystem::path> contents = DirectoryContent::getAllRecursively(path);
-    for (auto& entry : contents) {
-        auto prefix = std::filesystem::is_directory(entry) ? "d" : "f";
-        std::cout << prefix << " " << entry.string() << std::endl;
+    for (auto& path : contents) {
+        FileInfo file(path);
+        bool ownerCanWrite = file.checkOwnerPermissions(username, Permission::WRITE);
+        bool groupCanWrite = file.checkGroupPermissions(group, Permission::WRITE);
+        bool otherCanWrite = file.checkOtherPermissions(Permission::WRITE);
+        if (ownerCanWrite || groupCanWrite || otherCanWrite) {
+            auto prefix = std::filesystem::is_directory(path) ? "d" : "f";
+            std::cout << prefix << " " << path.string() << std::endl;
+        }
     }
 
     return 0;

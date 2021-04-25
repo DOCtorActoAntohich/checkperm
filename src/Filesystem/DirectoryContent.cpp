@@ -1,6 +1,7 @@
 #include "DirectoryContent.h"
 
 #include <queue>
+#include <iostream>
 
 DirectoryContent::DirectoryContent()
 { }
@@ -11,9 +12,17 @@ using path_t = std::filesystem::path;
 
 std::vector<path_t> DirectoryContent::getAll(const path_t& source) {
     std::vector<path_t> contents;
-    for (const auto& entry : std::filesystem::directory_iterator(source)) {
-        contents.push_back(entry);
+    try {
+        if ((source.string().find("/sys") == 0) || (source.string().find("/proc") == 0)) {
+            throw "Wait, that's illegal.";
+        }
+        for (const auto& entry : std::filesystem::directory_iterator(source)) {
+            if (!std::filesystem::is_symlink(entry)) {
+                contents.push_back(entry);
+            }
+        }
     }
+    catch (...) { } // In case that directory can't open, it's ignored.
     return contents;
 }
 
