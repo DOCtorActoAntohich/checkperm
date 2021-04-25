@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include "CommandLineParser.h"
+#include "DirectoryContent.h"
 
 static constexpr auto ARGS_REQUIRED = 7;
 
